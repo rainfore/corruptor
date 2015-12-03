@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+var commander = require('commander')
+    .version(require('../package.json').version)
+    .usage('[options]')
+    .option('-t, --type <type>', 'button')
+    // .option('-o, --output <filename>', 'the output filename or dirname. [optional] (if not passed ,the result will be printed on the console)')
+    // .option('-f, --format <n>', 'the output format, 1: common | 2: compress | 3:oneline. [optional] defualt 1', parseInt, 1)
+    // .option('-w, --watch [flag]', 'watch the file change and build. 0: close | 1: open | 2: open and beep,[optional] default 0', parseInt, 0)
+    // .option('-s, --sourcemap', 'generate the sourcemap. [optional] default false', false)
+    // .option('-c, --config <file>', 'the config filepath. [optional]')
+    // .option('--indent <indent>', 'the indent string. [optional] default "\\t"', '\t')
+    // .option('--exclude <regexp>', 'a passed regexp to avoid any file match it been compiled.[optional]', '(\/|\\\\)_|^_|include')
+    // .option('--include <folder>', 'add path to include pathes. [optional]')
+    .parse(process.argv);
+
+var src = commander.args[0];
+
+var Corruptor = require('../index.js');
+console.log(new Corruptor().corrupt(src, commander.type));
