@@ -34,7 +34,7 @@ Color.isAllEqual = function(colors) {
 
 Color.isSimilar = function(color1, color2, allowance) {
     allowance = allowance || 0;
-    return Math.abs(color1.red - color2.red) <= allowance && Math.abs(color1.green - color2.green) <= allowance && Math.abs(color1.blue - color2.blue) <= allowance && Math.abs(color1.alpha - color2.alpha) <= allowance;
+    return Color.distanceSquare(color1, color2) <= allowance*allowance;
 }
 
 Color.isAllSimilar = function(colors, allowance) {
@@ -42,6 +42,35 @@ Color.isAllSimilar = function(colors, allowance) {
         if(!Color.isSimilar(colors[i], colors[i - 1], allowance))
             return false;
     return true;
+}
+
+Color.distance = function(color1, color2) {
+    return Math.sqrt(
+        + (color1.red - color2.red)*(color1.red - color2.red)
+        + (color1.green - color2.green)*(color1.green - color2.green)
+        + (color1.blue - color2.blue)*(color1.blue - color2.blue)
+        + (color1.alpha - color2.alpha)*(color1.alpha - color2.alpha)
+    );
+}
+
+Color.distanceSquare = function(color1, color2) {
+    return (color1.red - color2.red)*(color1.red - color2.red)
+         + (color1.green - color2.green)*(color1.green - color2.green)
+         + (color1.blue - color2.blue)*(color1.blue - color2.blue)
+         + (color1.alpha - color2.alpha)*(color1.alpha - color2.alpha);
+}
+
+Color.absDistance = function(color1, color2) {
+    return Math.abs(color1.red - color2.red) + Math.abs(color1.green - color2.green) + Math.abs(color1.blue - color2.blue) + Math.abs(color1.alpha - color2.alpha);
+}
+
+Color.diffDistance = function(color0, color1, color2) {
+    return Math.sqrt(
+        + (color0.red + color2.red - color1.red*2)*(color0.red + color2.red - color1.red*2)
+        + (color0.green + color2.green - color1.green*2)*(color0.green + color2.green - color1.green*2)
+        + (color0.blue + color2.blue - color1.blue*2)*(color0.blue + color2.blue - color1.blue*2)
+        + (color0.alpha + color2.alpha - color1.alpha*2)*(color0.alpha + color2.alpha - color1.alpha*2)
+    );
 }
 
 Color.fromHex = function(hex) {
@@ -111,6 +140,55 @@ Color.average = function(colors) {
         blue/colors.length>>0,
         alpha/colors.length>>0
     );
+}
+
+// Color.diff = function(start, colors) {
+//     var result = [Color.distance(colors[0], start)];
+//     for(var i = 1; i < colors.length; i++)
+//         result[i] = Color.distance(colors[i], colors[i - 1]);
+//     return result;
+// }
+
+// Color.diff2 = function(start, colors) {
+//     var diff = Color.diff(start, colors);
+//     var result = [diff[0]];
+//     for(var i = 1; i < diff.length; i++)
+//         result[i] = diff[i] - diff[i - 1];
+//     return result;
+// }
+
+Color.sections = function(start, colors, end, minDiff2) {
+    colors = [].concat([start], colors, [end]);
+
+    // var diff = [];
+    // for(var i = 0; i < colors.length - 1; i++) {   
+    //     diff[i] = Color.distance(colors[i + 1], colors[i]);
+    //     diff[i] = diff[i] > ? diff[i] : 0;
+    // }
+    // console.log(diff);
+
+    var diff2 = [];
+    for(var i = 0; i < colors.length - 2; i++) {   
+        diff2[i] = Color.diffDistance(colors[i], colors[i + 1], colors[i + 2]);
+        // Math.abs(diff[i + 1] - diff[i]) >= minDiff2 ? diff[i] : 0; // diff[i] > 36 ? diff[i] : 0;
+        diff2[i] = diff2[i] >= minDiff2 ? diff2[i] : 0;
+    }
+    for(var i = diff2.length - 1; i > 0; i--)
+        diff2[i] = diff2[i - 1] ? diff2[i] : 0;
+    console.log(diff2);
+
+    var sections = [];
+    var width = 0;
+    for(var i = 0; i < diff2.length; i++)
+        if(diff2[i]) {
+            sections.push(width);
+            width = 1;
+        } else
+            width++;
+
+    sections.push(width);
+
+    return sections;
 }
 
 Color.toString = function() {

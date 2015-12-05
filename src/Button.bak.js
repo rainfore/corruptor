@@ -1,7 +1,7 @@
 require('./ImageData.js');
 var Color = require('./Color.js');
 
-function Box(corruptor) {
+function Button(corruptor) {
     this.corruptor = corruptor;
     this.options = corruptor.options;
     this.imageData = corruptor.imageData;
@@ -9,11 +9,11 @@ function Box(corruptor) {
     this.features = {};
 }
 
-Box.prototype.getBackground = function() {
+Button.prototype.getBackground = function() {
     return Color.most(this.innerImageData.toColors(this.options.density));
 }
 
-Box.prototype.getColor = function() {
+Button.prototype.getColor = function() {
     var colors = [];
 
     for(var x = 0; x < this.innerEdgeImageData.width; x++)
@@ -24,7 +24,7 @@ Box.prototype.getColor = function() {
     return Color.most(colors);
 }
 
-Box.prototype.getBorder = function() {
+Button.prototype.getBorder = function() {
     var colors = [];
 
     for(var x = this.boundary.left; x <= this.boundary.right; x++) {
@@ -40,11 +40,11 @@ Box.prototype.getBorder = function() {
     return Color.most(colors);
 }
 
-Box.prototype.corrupt = function() {
+Button.prototype.corrupt = function() {
     this.outerColor = this.imageData.getOuterColor(this.options.allowance);
 
-    this.imageData = this.imageData.trim();
-    this.edgeImageData = this.imageData.laplace8().gray().pass(64);
+    // this.imageData = this.imageData.trim();
+    this.edgeImageData = this.imageData.laplace8().gray().pass(5);
     this.boundary = this.edgeImageData.getBoundary();
     this.innerImageData = this.imageData.clip(this.boundary.left + 1, this.boundary.top + 1, this.boundary.right - this.boundary.left - 1, this.boundary.bottom - this.boundary.top - 1);
     this.innerEdgeImageData = this.edgeImageData.clip(this.boundary.left + 1, this.boundary.top + 1, this.boundary.right - this.boundary.left - 1, this.boundary.bottom - this.boundary.top - 1);
@@ -59,4 +59,4 @@ Box.prototype.corrupt = function() {
     return this.features;
 }
 
-module.exports = Box;
+module.exports = Button;

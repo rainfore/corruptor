@@ -1,23 +1,36 @@
-<div><img id="image" src="button.png" /></div>
-<canvas id="canvas" width="200" height="200" style="border: 1px solid #ddd; background: #f4f4f4;"></canvas>
-<a onclick="saveImage(this)" download="test.png">保存</a>
-
+<p><img id="image" src="button.png" /></p>
+<canvas id="canvas" width="200" height="200" style="background: #D8EDFB;"></canvas>
+<p><a onclick="saveImage(this)" download="test.png">保存</a></p>
 
 <script src="../../dist/corruptor.js"></script>
 <script>
+
+CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    this.beginPath();
+    this.moveTo(x+r, y);
+    this.arcTo(x+w, y, x+w, y+h, r);
+    this.arcTo(x+w, y+h, x, y+h, r);
+    this.arcTo(x, y+h, x, y, r);
+    this.arcTo(x, y, x+w, y, r);
+    // this.arcTo(x+r, y);
+    this.closePath();
+    return this;
+}
+
 var img = document.getElementById('image');
 
-function preImage(img, callback) {
+function preImage(img, success, error) {
     if(img.complete)
-        callback();
+        img.getAttribute('src') ? success() : error();
     else
-        img.onload = callback;
+        img.onload = success;
 }
 
 function saveImage($a) {
     var canvas = document.getElementById('canvas');
     $a.href = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
-    $a.download = 'test.png';
 }
 
 preImage(img, function() {
@@ -34,5 +47,21 @@ preImage(img, function() {
     width = canvas.width = corruptor.imageData.width;
     height = canvas.height = corruptor.imageData.height;
     context.putImageData(corruptor.testImageData, 0, 0);
+}, function() {
+    var canvas = document.getElementById('canvas');
+    var width = canvas.width = 200;
+    var height = canvas.height = 100;
+    var context = canvas.getContext('2d');
+    
+    context.roundRect(20, 20, 60, 20, 4);
+    context.strokeStyle = '#ccc';
+    context.fillStyle = '#eee';
+    context.stroke();
+    context.fill();
+
+    var corruptor = new Corruptor(context.getImageData(0, 0, width, height));
+    corruptor.corrupt();
+
+    // context.putImageData(corruptor.testImageData, 0, 0);
 });
 </script>

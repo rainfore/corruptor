@@ -108,8 +108,8 @@ ImageData.prototype.getBoundary = function(allowance) {
     return boundary;
 }
 
-ImageData.prototype.trim = function() {
-    var boundary = this.getBoundary();
+ImageData.prototype.trim = function(allowance) {
+    var boundary = this.getBoundary(allowance);
     return this.clip(boundary.left, boundary.top, boundary.right - boundary.left + 1, boundary.bottom - boundary.top + 1);
 }
 
