@@ -23,15 +23,15 @@ Color.prototype.toRGBHex = function() {
 
 
 Color.prototype.toString = function() {
-    return this.toRGBHex();
+    return this.toHex();
 }
 
 Color.prototype.length = function() {
-    return (Math.abs(this.red) + Math.abs(this.green) + Math.abs(this.blue))/3;
+    return Math.sqrt(this.red*this.red + this.green*this.green + this.blue*this.blue + this.alpha*this.alpha);
 }
 
 Color.areEqual = function(color1, color2) {
-    return color1.red === color2.red && color1.green === color2.green && color1.blue === color2.blue;
+    return color1.red === color2.red && color1.green === color2.green && color1.blue === color2.blue && color1.alpha === color2.alpha;
 }
 
 Color.areAllEqual = function(colors) {
@@ -43,7 +43,7 @@ Color.areAllEqual = function(colors) {
 
 Color.areSimilar = function(color1, color2, allowance) {
     allowance = allowance || 0;
-    return Color.distance(color1, color2) <= allowance;
+    return Color.distanceSquare(color1, color2) <= allowance*allowance;
 }
 
 Color.areAllSimilar = function(colors, allowance) {
@@ -54,7 +54,32 @@ Color.areAllSimilar = function(colors, allowance) {
 }
 
 Color.distance = function(color1, color2) {
-    return Math.abs(color1.red - color2.red) + Math.abs(color1.green - color2.green) + Math.abs(color1.blue - color2.blue);
+    return Math.sqrt(
+        + (color1.red - color2.red)*(color1.red - color2.red)
+        + (color1.green - color2.green)*(color1.green - color2.green)
+        + (color1.blue - color2.blue)*(color1.blue - color2.blue)
+        + (color1.alpha - color2.alpha)*(color1.alpha - color2.alpha)
+    );
+}
+
+Color.distanceSquare = function(color1, color2) {
+    return (color1.red - color2.red)*(color1.red - color2.red)
+         + (color1.green - color2.green)*(color1.green - color2.green)
+         + (color1.blue - color2.blue)*(color1.blue - color2.blue)
+         + (color1.alpha - color2.alpha)*(color1.alpha - color2.alpha);
+}
+
+Color.absDistance = function(color1, color2) {
+    return Math.abs(color1.red - color2.red) + Math.abs(color1.green - color2.green) + Math.abs(color1.blue - color2.blue) + Math.abs(color1.alpha - color2.alpha);
+}
+
+Color.diffDistance = function(color0, color1, color2) {
+    return Math.sqrt(
+        + (color0.red + color2.red - color1.red*2)*(color0.red + color2.red - color1.red*2)
+        + (color0.green + color2.green - color1.green*2)*(color0.green + color2.green - color1.green*2)
+        + (color0.blue + color2.blue - color1.blue*2)*(color0.blue + color2.blue - color1.blue*2)
+        + (color0.alpha + color2.alpha - color1.alpha*2)*(color0.alpha + color2.alpha - color1.alpha*2)
+    );
 }
 
 Color.fromHex = function(hex) {
@@ -95,10 +120,10 @@ Color.aggregate = function(colors, value) {
     return aggregate;
 }
 
-Color.most = function(colors) {
-    var aggregate = Color.aggregate(colors);
+Color.most = function(colors, value) {
+    var aggregate = Color.aggregate(colors, value);
 
-    var most;
+    var most = null;
     for(var key in aggregate) {
         if(!most || aggregate[most] < aggregate[key])
             most = key;
@@ -126,7 +151,6 @@ Color.average = function(colors) {
     );
 }
 
-// Boundary Problem
 // Color.diff = function(start, colors) {
 //     var result = [Color.distance(colors[0], start)];
 //     for(var i = 1; i < colors.length; i++)
@@ -134,7 +158,6 @@ Color.average = function(colors) {
 //     return result;
 // }
 
-// Boundary Problem
 // Color.diff2 = function(start, colors) {
 //     var diff = Color.diff(start, colors);
 //     var result = [diff[0]];
@@ -142,5 +165,42 @@ Color.average = function(colors) {
 //         result[i] = diff[i] - diff[i - 1];
 //     return result;
 // }
+
+Color.sections = function(start, colors, end, laplaceThreshold) {
+    var allColors = [].concat([start], colors, [end]);
+
+    // var diff = [];
+    // for(var i = 0; i < allColors.length - 1; i++) {   
+    //     diff[i] = Color.distance(allColors[i + 1], allColors[i]);
+    //     diff[i] = diff[i] > ? diff[i] : 0;
+    // }
+    // console.log(diff);
+
+    var diff2 = [];
+    for(var i = 0; i < allColors.length - 2; i++) {   
+        diff2[i] = Color.diffDistance(allColors[i], allColors[i + 1], allColors[i + 2]);
+        // Math.abs(diff[i + 1] - diff[i]) >= laplaceThreshold ? diff[i] : 0; // diff[i] > 36 ? diff[i] : 0;
+        diff2[i] = diff2[i] >= laplaceThreshold ? diff2[i] : 0;
+    }
+    for(var i = diff2.length - 1; i > 0; i--)
+        diff2[i] = diff2[i - 1] ? diff2[i] : 0;
+    // console.log(diff2);
+
+    var sections = [];
+    var width = 0;
+    for(var i = 0; i < diff2.length; i++)
+        if(diff2[i]) {
+            sections.push(width);
+            width = 1;
+        } else
+            width++;
+
+    sections.push(width);
+
+    if(Color.distance(colors[colors.length - 1], end) >= laplaceThreshold)
+        sections.push(0);
+
+    return sections;
+}
 
 module.exports = Color;

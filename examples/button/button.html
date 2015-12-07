@@ -1,67 +1,44 @@
-<p><img id="image" src="button.png" /></p>
-<canvas id="canvas" width="200" height="200" style="background: #D8EDFB;"></canvas>
+<style>
+body {background-color: white;}
+/*.g-col {display: inline-block;}*/
+/*.g-col-6 {width: 49%;}*/
+.g-row {border-bottom: 1px solid #ccc; overflow: auto;}
+canvas {border: 1px solid blue; margin: 5px; background: yellow;}
+.g-row span {vertical-align: top; margin-top: 5px; display: inline-block;}
+canvas + div {width: 300px; margin: 5px; float: right; font-size: 12px; font-family: 'Liberation Mono', Menlo, Courier, monospace;}
+</style>
+<div class="g-col g-col-6"></div>
+<div id="g-testctn" class="g-col g-col-6"></div>
+<!-- <p><img id="image" src="button3.png" /></p>
 <p><a onclick="saveImage(this)" download="test.png">保存</a></p>
-
+ -->
 <script src="../../dist/corruptor.js"></script>
 <script>
+var testContainer = document.getElementById('g-testctn');
 
-CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-    if (w < 2 * r) r = w / 2;
-    if (h < 2 * r) r = h / 2;
-    this.beginPath();
-    this.moveTo(x+r, y);
-    this.arcTo(x+w, y, x+w, y+h, r);
-    this.arcTo(x+w, y+h, x, y+h, r);
-    this.arcTo(x, y+h, x, y, r);
-    this.arcTo(x, y, x+w, y, r);
-    // this.arcTo(x+r, y);
-    this.closePath();
-    return this;
+for(var i = 1; i <= 10; i++) {
+    var $gRow = document.createElement('div');
+    $gRow.className = 'g-row';
+    testContainer.appendChild($gRow);
+
+    (function(container, index) {
+        var $number = document.createElement('span');
+        $number.innerText = index + '. ';
+        container.appendChild($number);
+
+        var corruptor = new Corruptor('button' + index + '.png', null, function(ruleset) {
+            console.log(index + ' ================= end');
+
+            corruptor.imageDatas.forEach(function(imageData) {
+                container.appendChild(Corruptor.getCanvasFromImageData(imageData));
+            });
+
+            var $text = document.createElement('div');
+            $text.innerHTML = Object.keys(ruleset).map(function(key) {
+                return key + ': ' + ruleset[key] + ';';
+            }).join('<br>');
+            container.appendChild($text);
+        });
+    })($gRow, i);
 }
-
-var img = document.getElementById('image');
-
-function preImage(img, success, error) {
-    if(img.complete)
-        img.getAttribute('src') ? success() : error();
-    else
-        img.onload = success;
-}
-
-function saveImage($a) {
-    var canvas = document.getElementById('canvas');
-    $a.href = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
-}
-
-preImage(img, function() {
-    var canvas = document.getElementById('canvas');
-    var width = canvas.width = img.width;
-    var height = canvas.height = img.height;
-    var context = canvas.getContext('2d');
-    
-    context.drawImage(img, 0, 0);
-    var corruptor = new Corruptor(context.getImageData(0, 0, width, height));
-    corruptor.corrupt();
-
-    // trim
-    width = canvas.width = corruptor.imageData.width;
-    height = canvas.height = corruptor.imageData.height;
-    context.putImageData(corruptor.testImageData, 0, 0);
-}, function() {
-    var canvas = document.getElementById('canvas');
-    var width = canvas.width = 200;
-    var height = canvas.height = 100;
-    var context = canvas.getContext('2d');
-    
-    context.roundRect(20, 20, 60, 20, 4);
-    context.strokeStyle = '#ccc';
-    context.fillStyle = '#eee';
-    context.stroke();
-    context.fill();
-
-    var corruptor = new Corruptor(context.getImageData(0, 0, width, height));
-    corruptor.corrupt();
-
-    // context.putImageData(corruptor.testImageData, 0, 0);
-});
 </script>

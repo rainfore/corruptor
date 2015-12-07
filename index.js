@@ -1,4 +1,6 @@
 var Corruptor = require('./src/Corruptor.js');
+Corruptor._ = require('./src/util.js');
+Corruptor.Color = require('./src/Color.js');
 Corruptor.manipulator = require('./src/manipulator.js');
 
 // var gm = require('gm');

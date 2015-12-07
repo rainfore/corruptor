@@ -27,7 +27,7 @@ Box.prototype.getBorder = function() {
     var topCenterColor = this.imageData.getColor(this.imageData.width/2>>0, 0);
     var bottomCenterColor = this.imageData.getColor(this.imageData.width/2>>0, this.imageData.height - 1);
 
-    if(!Color.isAllSimilar([leftCenterColor, rightCenterColor, topCenterColor, bottomCenterColor], this.options.allowance))
+    if(!Color.areAllSimilar([leftCenterColor, rightCenterColor, topCenterColor, bottomCenterColor], this.options.allowance))
         return;
 
     border.color = Color.most([leftCenterColor, rightCenterColor, topCenterColor, bottomCenterColor]);
@@ -38,25 +38,25 @@ Box.prototype.getBorder = function() {
     border.topWidth = 0;
     border.bottomWidth = 0;
     for(var x = 1; x < this.imageData.width/2>>0; x++)
-        if(!Color.isSimilar(leftCenterColor, this.imageData.getColor(x, this.imageData.height/2>>0), this.options.allowance)) {
+        if(!Color.areSimilar(leftCenterColor, this.imageData.getColor(x, this.imageData.height/2>>0), this.options.allowance)) {
             border.leftWidth = x;
             console.log(leftCenterColor, this.imageData.getColor(x, this.imageData.height/2>>0))
             break;
         }
     for(var x = this.imageData.width - 2; x >= this.imageData.width/2>>0; x--)
-        if(!Color.isSimilar(rightCenterColor, this.imageData.getColor(x, this.imageData.height/2>>0), this.options.allowance)) {
+        if(!Color.areSimilar(rightCenterColor, this.imageData.getColor(x, this.imageData.height/2>>0), this.options.allowance)) {
             border.rightWidth = this.imageData.width - 1 - x;
             console.log(rightCenterColor, this.imageData.getColor(x, this.imageData.height/2>>0))
             break;
         }
     for(var y = 1; y < this.imageData.height/2>>0; y++)
-        if(!Color.isSimilar(topCenterColor, this.imageData.getColor(y, this.imageData.height/2>>0), this.options.allowance)) {
+        if(!Color.areSimilar(topCenterColor, this.imageData.getColor(y, this.imageData.height/2>>0), this.options.allowance)) {
             border.topWidth = y;
             console.log(topCenterColor, this.imageData.getColor(y, this.imageData.height/2>>0))
             break;
         }
     for(var y = this.imageData.height - 2; y >= this.imageData.height/2>>0; y--)
-        if(!Color.isSimilar(bottomCenterColor, this.imageData.getColor(y, this.imageData.height/2>>0), this.options.allowance)) {
+        if(!Color.areSimilar(bottomCenterColor, this.imageData.getColor(y, this.imageData.height/2>>0), this.options.allowance)) {
             border.bottomWidth = this.imageData.height - 1 - y;
             console.log(bottomCenterColor, this.imageData.getColor(y, this.imageData.height/2>>0))
             break;
