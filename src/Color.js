@@ -54,7 +54,7 @@ Color.areAllSimilar = function(colors, allowance) {
 }
 
 Color.distance = function(color1, color2) {
-    return Math.abs(color1.red - color2.red) + Math.abs(color1.green - color2.green) + Math.abs(color1.blue - color2.blue);
+    return (Math.abs(color1.red - color2.red) + Math.abs(color1.green - color2.green) + Math.abs(color1.blue - color2.blue))/3;
 }
 
 Color.fromHex = function(hex) {
@@ -135,12 +135,24 @@ Color.average = function(colors) {
 // }
 
 // Boundary Problem
-// Color.diff2 = function(start, colors) {
-//     var diff = Color.diff(start, colors);
-//     var result = [diff[0]];
-//     for(var i = 1; i < diff.length; i++)
-//         result[i] = diff[i] - diff[i - 1];
-//     return result;
-// }
+Color.diff2Distance = function(color0, color1, color2) {
+    return new Color(
+        color0.red + color2.red - color1.red*2,
+        color0.green + color2.green - color1.green*2,
+        color0.blue + color2.blue - color1.blue*2
+    ).length();
+}
+
+Color.diffDistancePercent = function(color0, color1, color2) {
+    return new Color(
+        color1.red - color0.red,
+        color1.green - color0.green,
+        color1.blue - color0.blue
+    ).length() / new Color(
+        color2.red - color0.red,
+        color2.green - color0.green,
+        color2.blue - color0.blue
+    ).length() * 100;
+}
 
 module.exports = Color;

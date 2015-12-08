@@ -2,13 +2,16 @@ require('./ImageData.js');
 var Color = require('./Color.js');
 var Button = require('./Button.js');
 
+// <= value
 function Corruptor(image, options, callback) {
     this.options = {
-        allowance: 8,
+        allowance: 5,
         densityX: 4,
         densityY: 2,
-        laplaceThreshold: 8,
-        gradientThreshold: 6,
+        laplaceThreshold: 5,
+        gradientThreshold: 5,
+        gradientHighThreshold: 50,
+        diffPercent: 50,
         maxBorder: 4,
         maxBorderRadius: 6,
         deviation: 1,
@@ -74,10 +77,12 @@ Corruptor.prototype.corrupt = function() {
     this.ruleset = button.corrupt();
 
     this.imageDatas.push(button.imageData);
-    // this.imageDatas.push(button.boolCorruptXImageData);
-    // this.imageDatas.push(button.boolCorruptYImageData);
     this.imageDatas.push(button.gradientBoolXImageData);
     this.imageDatas.push(button.gradientBoolYImageData);
+    // this.imageDatas.push(button.laplaceBoolXImageData);
+    // this.imageDatas.push(button.laplaceBoolYImageData);
+    // this.imageDatas.push(button.gradientBoolHighXImageData);
+    // this.imageDatas.push(button.gradientBoolHighYImageData);
 
     // var yImageData = button.imageData.copy();
     // for(var y = 0; y < yImageData.height; y++)

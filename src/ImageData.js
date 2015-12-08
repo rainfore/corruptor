@@ -31,6 +31,10 @@ ImageData.prototype.getColors = function(density, left, top, width, height) {
     return colors;
 }
 
+ImageData.prototype.getBool = function(x, y) {
+    return this.data[y*this.width*4 + x*4 + 0] && this.data[y*this.width*4 + x*4 + 1] && this.data[y*this.width*4 + x*4 + 2];
+}
+
 ImageData.prototype.clip = function(left, top, width, height) {
     var arr = new Uint8ClampedArray(width*height*4);
 
@@ -351,7 +355,7 @@ ImageData.prototype.boolCorrupt = function(value) {
     for(var x = 1; x < this.width; x++) {
         for(var y = 1; y < this.height; y++) {
             for(var i = 0; i < 3; i++)
-                if(this.data[(y - 1)*this.width*4 + x*4 + i] >= value && this.data[y*this.width*4 + (x - 1)*4 + i] >= value && this.data[y*this.width*4 + x*4 + i] >= value)
+                if(this.data[(y - 1)*this.width*4 + x*4 + i] > value && this.data[y*this.width*4 + (x - 1)*4 + i] > value && this.data[y*this.width*4 + x*4 + i] > value)
                     arr[y*this.width*4 + x*4 + i] = 255;
                 else
                     arr[y*this.width*4 + x*4 + i] = 0;
@@ -381,7 +385,7 @@ ImageData.prototype.boolCorruptX = function(value) {
     for(var y = 0; y < this.height; y++) {
         for(var x = 1; x < this.width; x++) {
             for(var i = 0; i < 3; i++)
-                if(this.data[y*this.width*4 + (x - 1)*4 + i] >= value && this.data[y*this.width*4 + x*4 + i] >= value)
+                if(this.data[y*this.width*4 + (x - 1)*4 + i] > value && this.data[y*this.width*4 + x*4 + i] > value)
                     arr[y*this.width*4 + x*4 + i] = 255;
                 else
                     arr[y*this.width*4 + x*4 + i] = 0;
@@ -405,7 +409,7 @@ ImageData.prototype.boolCorruptY = function(value) {
     for(var x = 0; x < this.width; x++) {
         for(var y = 1; y < this.height; y++) {
             for(var i = 0; i < 3; i++)
-                if(this.data[(y - 1)*this.width*4 + x*4 + i] >= value && this.data[y*this.width*4 + x*4 + i] >= value)
+                if(this.data[(y - 1)*this.width*4 + x*4 + i] > value && this.data[y*this.width*4 + x*4 + i] > value)
                     arr[y*this.width*4 + x*4 + i] = 255;
                 else
                     arr[y*this.width*4 + x*4 + i] = 0;

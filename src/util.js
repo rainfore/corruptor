@@ -16,6 +16,10 @@ Array.prototype.sum = function() {
     return result;
 }
 
+Array.prototype.average = function() {
+    return this.sum()/this.length;
+}
+
 _.push = function(map, key, value) {
     if(map[key])
         map[key].push(value);
@@ -38,6 +42,12 @@ _.isExists = function(item) {
 _.areAllExists = function(arr) {
     return arr.every(function(item) {
         return item !== undefined;
+    });
+}
+
+_.areAllTrue = function(arr) {
+    return arr.every(function(item) {
+        return !!item;
     });
 }
 

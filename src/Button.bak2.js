@@ -190,3 +190,36 @@ Button.prototype.corrupt = function() {
 }
 
 module.exports = Button;
+
+
+    // 圆角边距
+    // border-radius
+    // - 目前只考虑四个圆角相等的情况
+    // var borderRadiuses = [
+    //     innerBoundary.left - borderBoundary.left + 1 - (this.features['border-left-width'] || 0),
+    //     borderBoundary.right - innerBoundary.right + 1 - (this.features['border-right-width'] || 0),
+    //     innerBoundary.top - borderBoundary.top + 1 - (this.features['border-top-width'] || 0),
+    //     borderBoundary.bottom - innerBoundary.bottom + 1 - (this.features['border-bottom-width'] || 0)
+    // ];
+
+    // console.log(borderBoundary, innerBoundary, borderRadiuses);
+    // for(var i = 0; i < this.imageData.width || i < this.imageData.height; i++)
+    //     if(this.gradientBoolXImageData.getBool(borderBoundary.left + i + 1, borderBoundary.top + i) && this.gradientBoolYImageData.getBool(borderBoundary.left + i, borderBoundary.top + i + 1)) {
+    //         this.features['border-top-left-radius'] = i;            
+    //         break;
+    //     }
+    // for(var i = 0; i < this.imageData.width || i < this.imageData.height; i++)
+    //     if(this.gradientBoolXImageData.getBool(borderBoundary.right - i, borderBoundary.top + i) && this.gradientBoolYImageData.getBool(borderBoundary.right - i, borderBoundary.top + i + 1)) {
+    //         this.features['border-top-right-radius'] = i;            
+    //         break;
+    //     }
+    // for(var i = 0; i < this.imageData.width || i < this.imageData.height; i++)
+    //     if(this.gradientBoolXImageData.getBool(borderBoundary.left + i + 1, borderBoundary.bottom - i) && this.gradientBoolYImageData.getBool(borderBoundary.left + i, borderBoundary.bottom - i)) {
+    //         this.features['border-bottom-left-radius'] = i;            
+    //         break;
+    //     }
+    // for(var i = 0; i < this.imageData.width || i < this.imageData.height; i++)
+    //     if(this.gradientBoolXImageData.getBool(borderBoundary.right - i, borderBoundary.bottom - i) && this.gradientBoolYImageData.getBool(borderBoundary.right - i, borderBoundary.bottom - i)) {
+    //         this.features['border-bottom-right-radius'] = i;            
+    //         break;
+    //     }

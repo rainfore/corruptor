@@ -6,6 +6,18 @@ body {background-color: white;}
 canvas {border: 1px solid blue; margin: 5px; background: yellow;}
 .g-row span {vertical-align: top; margin-top: 5px; display: inline-block;}
 canvas + div {width: 300px; margin: 5px; float: right; font-size: 12px; font-family: 'Liberation Mono', Menlo, Courier, monospace;}
+
+.u-btn {
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 0 20px;
+    line-height: 35px;
+    background: #26C09E;
+    color: white;
+    margin: 5px;
+    /*border: 1px s;*/
+}
 </style>
 <div class="g-col g-col-6"></div>
 <div id="g-testctn" class="g-col g-col-6"></div>
@@ -15,6 +27,9 @@ canvas + div {width: 300px; margin: 5px; float: right; font-size: 12px; font-fam
 <script src="../../dist/corruptor.js"></script>
 <script>
 var testContainer = document.getElementById('g-testctn');
+
+var borderRadiuses = [null, 3, 2, 0, 5, 7, 0, 3, 3, 3, 3];
+var borderWidths = [null, 1, 0, 0, 2, 3, 1, 1, 1, 1, 1];
 
 for(var i = 1; i <= 10; i++) {
     var $gRow = document.createElement('div');
@@ -27,7 +42,7 @@ for(var i = 1; i <= 10; i++) {
         container.appendChild($number);
 
         var corruptor = new Corruptor('button' + index + '.png', null, function(ruleset) {
-            console.log(index + ' ================= end');
+            console.log(index + '.', '================= end', borderRadiuses[index] + 'px', borderWidths[index] + 'px');
 
             corruptor.imageDatas.forEach(function(imageData) {
                 container.appendChild(Corruptor.getCanvasFromImageData(imageData));
@@ -42,3 +57,4 @@ for(var i = 1; i <= 10; i++) {
     })($gRow, i);
 }
 </script>
+<a class="u-btn">按钮</a>
